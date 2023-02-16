@@ -1,0 +1,329 @@
+@import "@fortawesome/fontawesome-free/css/all.css";
+@import "@fortawesome/fontawesome-free/css/brands.css";
+@import "@fortawesome/fontawesome-free/css/regular.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body{
+    background-image:linear-gradient(75deg,rgb(24, 24, 17),rgb(63, 63, 200));
+}
+
+.aside,.menu,.select{
+    --sidebar-width: 230px;
+    --sidebar-margin-left: -10px;
+}
+
+.aside{
+    overflow: hidden;
+    background-color: rgb(24, 24, 17);
+    position: absolute;
+    height: calc(100vh - 80px);
+    bottom: 0px;
+    margin-left: var(--sidebar-margin-left);
+    width: calc(var(--sidebar-width));
+}
+
+.menu{
+    width: 100%;
+    cursor: pointer;
+    position: relative;
+}
+
+.menu>li,.menu>a>li{
+    width: var(--sidebar-width);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 2px;
+    padding-left: 6px;
+}
+
+.menu i{
+    padding: 4px;
+}
+
+.menu h1{
+    border-top: 1px;
+    border-color: rgb(24, 24, 17);
+    margin-left: 4px;
+    padding: 2px;
+    width: 100%;
+}
+
+.menu a:hover,.menu h1:hover{
+    background-color: rgba(255, 255, 255, 0.10);
+}
+
+.select>a,.select>h1{
+    background-color: rgba(255, 255, 255, 0.10);
+}
+
+.menu>li>ul{
+    overflow: hidden;
+    height: 0px;
+}
+
+.menu>.select>ul{
+    height: auto;
+}
+
+.menu>li>ul>li{
+    height: 0px;
+    transition: height .3s ease-in;
+}   
+
+.menu>.select>ul>li{
+    height: 32px;
+    transition: height .3s ease-in;
+}
+
+.menu>.select>ul>.select{
+    height: auto;
+    transition: height .3s ease-in;
+}
+
+.banner{
+    position: absolute;
+}
+
+main{
+    height: calc(100vh - 160px);
+}
+
+.main{
+    overflow: hidden;
+    margin-top: 80px;
+    margin-left: 220px;
+}
+
+.bg-dark-1{
+    background-color: rgb(39, 39, 42);
+}
+
+.bg-dark-2{
+    background-color: rgb(24, 24, 17);
+}
+
+.box-scroll{
+    overflow:auto;
+    height: calc(100vh - 80px);
+}
+
+
+.box-scroll::-webkit-scrollbar {
+    -webkit-appearance: none;
+}
+
+.box-scroll::-webkit-scrollbar:vertical {
+    width:8px;
+}
+
+.box-scroll::-webkit-scrollbar-button:increment,.box-scroll::-webkit-scrollbar-button {
+    display: none;
+} 
+
+.box-scroll::-webkit-scrollbar:horizontal {
+    height: 10px;
+}
+
+.box-scroll::-webkit-scrollbar-thumb {
+    background-color: #303030;
+    border-radius: 20px;
+    border: 2px;
+}
+
+.box-scroll::-webkit-scrollbar-track {
+    border-radius: 10px;  
+}
+
+.paper{
+    top: 0px;
+    left: 0px;
+    z-index: -1;
+}
+
+.colm-3{
+    grid-template-rows: repeat(3, minmax(0, 1fr));
+}
+
+#paper>img{
+    top: -200px;
+    z-index: -1;
+}
+
+.popup{
+    @apply w-48 cursor-pointer h-28;
+}
+
+.popup > h1{
+    transform: translateY(-1px);
+    z-index: 50;
+    @apply w-48 text-2xl absolute bg-zinc-700 hover:bg-zinc-800 border-b border-zinc-900 text-zinc-200 p-3 py-2 px-10 lg:p-10 lg:px-12;
+}
+.popup > ul{
+    z-index: 0;
+    transform: translateY(-80px);
+    transition: transform .3s ease-in;
+}
+
+.popupBlock > ul{
+    transform: translateY(112px);
+    transition: transform .3s ease-in;
+}
+
+.text-light:hover{
+    text-shadow: 2px 2px 6px rgb(145, 145, 145);
+}
+
+.form{
+    width: calc(100vw - 280px);
+}
+
+.text-error{
+    background:  rgb(255, 255, 255);
+    border-width: 1px;
+    border-radius: 3px ;
+    position: absolute;
+    margin-bottom: -20px;
+}
+
+.text-error::after{
+    content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent rgb(255, 255, 255) transparent;
+}
+
+.hover-closed{
+    position: relative;
+    border-radius: 4px;
+}
+
+.hover-closed>button{
+    background-color: rgba(24, 24, 17,0.5);
+    width: 100%;
+    height: 100%;
+    display: none;
+    cursor: pointer;
+}
+
+.hover-closed:hover>button{
+    display: block;
+}
+
+.search{
+    width: 100%;
+    @apply flex justify-center m-3 text-center;
+}
+
+.search-float{
+    z-index: 20;
+    position: absolute;
+    margin: 0px;
+    padding: 10px;
+    background-color: rgba(24, 24, 50,0.7);
+}
+
+.search>div{
+    padding: 10px;
+}
+
+.userPopup{
+    overflow: hidden;
+    position: absolute;
+    border-radius: 4px;
+    width: 0px;
+    height: 0px;
+    top: 4px;
+    margin-top: 0px;
+    right: 64px;
+    margin-right: 0px;
+    background-color: rgb(24, 24, 17);
+    z-index: 50;
+    box-shadow: 1px 1px 3px rgb(150, 150, 200);
+    transition: width .4s,height .4s ease-in;
+}
+
+.userPopupActive{
+    width: 200px;
+    height: auto;
+    transition: width .4s,height 0.4s ease-in;
+}
+
+.header-background{
+    background-color: rgba(24, 24, 50,0.7);
+}
+
+.table-list{
+    margin-top: 52px;
+}
+
+.table-list>table{
+    font-family: 'Calibri';
+}
+
+.table-list>table>thead{
+    background-color: rgba(24, 24, 50,0.7);
+}
+
+.table-list>table>thead>tr>th>div{
+    width: 100%;
+    margin: 1px;
+    padding: 5px;
+    border-width: 1px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.table-list>table>thead>tr>th>.item-none{
+    margin: 1px;
+    padding: 5px;
+    border-width: 0px;
+    cursor: default;
+}
+
+embed{
+/*     height: calc(100vh - 32px); */
+}
+
+@media (max-width: 640px){
+    .search{
+        top: 80px;
+        width: 100%;
+        background-color: rgb(24, 24, 17);
+        height: 64px;
+    }
+    
+    .search>div>button{
+        right: 16px;
+    }
+
+    aside{
+        height: 80px;
+        width: 100vw;
+        bottom: 0px;
+        overflow: hidden;
+        background-color: rgb(24, 24, 17);
+    }
+
+    .main{
+        margin-top: 80px;
+        margin-left: 0px;
+    }
+
+    .box-scroll{
+        overflow:auto;
+    }
+
+    .form{
+        width: 100%;
+    }
+}
