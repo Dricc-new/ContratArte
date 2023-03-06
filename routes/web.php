@@ -1,16 +1,11 @@
 <?php
 
+use App\Http\Controllers\AttachmentController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\EnterpriseController;
 use App\Http\Controllers\UserController;
-use App\Models\Contract;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Barryvdh\DomPDF\Facade\Pdf;
-use Ramsey\Uuid\Uuid;
-
     
 /*
 |--------------------------------------------------------------------------
@@ -40,7 +35,6 @@ Route::middleware([
     Route::controller(ContractController::class)->prefix('/Contratos/')->name('contract.')->group(function(){
         Route::get('Edit','edit')->name('edit');
         Route::post('Edit','post')->name('post');
-        
         Route::get('Info','info')->name('info');
         Route::get('Buscar','search')->name('list');
     });
@@ -51,6 +45,11 @@ Route::middleware([
         
         Route::get('Info','info')->name('info');
         Route::get('Lista','search')->name('list');
+    });
+    
+    Route::controller(AttachmentController::class)->prefix('/Adjunto/')->name('attachment.')->group(function(){
+        Route::get('Añadir Adjunto','create')->name('create');
+        Route::post('Store','store')->name('store');
     });
 
     

@@ -21,9 +21,9 @@ class Attachment extends Model
         return $this->belongsTo(Contract::class);
     }
 
-    public function type()
+    public function attachmenttype()
     {
-        return $this->belongsTo(Attachment_type::class);
+        return $this->belongsTo(Attachmenttype::class);
     }
     use HasFactory;
 }

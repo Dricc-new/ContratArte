@@ -46,14 +46,11 @@ function loadPdf(event){
 }
 
 function SubmitContract(){
-    
     form.type = props.type;
     form.enterprise_id = props.enterprise;
-    console.log(
-        form.post(route('contract.post'),{
-            forceFormData: true,
-        }) 
-        );
+    form.post(route('contract.post'),{
+        forceFormData: true,
+    });
 }
 
 function title(){

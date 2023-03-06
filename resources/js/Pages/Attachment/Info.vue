@@ -6,7 +6,7 @@ var props = defineProps({
     contract: Object,
     attachments: Object,
 });
-
+console.log(props.attachments);
 function previewPDF(url){
     document.getElementById('preview').classList.remove('hidden');
     document.getElementById('previewPDF').src=url;
@@ -34,6 +34,5 @@ function previewExit(){
         <div class="">
             <Attachment v-for="attach in attachments" :title="attach.attachmenttype.name" ></Attachment>
         </div>
-        <Link :href="route('attachment.create',{id: contract.id})"><button class="border-2 text-zinc-200 p-1 m-2 float-right rounded"><i class="fa fa-plus fa-sm p-1"></i>Agregar Adjunto</button></Link>
     </AppLayout>
 </template>

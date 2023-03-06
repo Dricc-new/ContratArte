@@ -30,8 +30,8 @@ class ContractEditRequest extends FormRequest
             'type_id' => 'required',
             'start_date' => 'required',
             'end_date' => 'required',
-            'pdf' => 'required',
-            'datasheet' => 'required',
+            //'pdf' => 'required',
+            //'datasheet' => 'required',
         ];
     }
 

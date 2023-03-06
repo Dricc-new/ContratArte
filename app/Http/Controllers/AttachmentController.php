@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Attachment;
+use App\Models\AttachmentType;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class AttachmentController extends Controller
 {
@@ -22,9 +24,11 @@ class AttachmentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        if ($request->get('id')){
+            return Inertia::render('Attachment/Edit',['id' => $request->id, 'types' => AttachmentType::where('id','>','2')->get()]);
+        }
     }
 
     /**

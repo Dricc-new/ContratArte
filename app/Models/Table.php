@@ -14,6 +14,7 @@ class Table extends Model
         'id',
         'name',
     ];
+    
 
     public function elements()
     {

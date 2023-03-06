@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ContractEditRequest;
+use App\Models\Attachment;
+use App\Models\AttachmentType;
 use App\Models\Contract;
 use App\Models\Enterprise;
 use App\Models\Type;
@@ -48,13 +50,24 @@ class ContractController extends Controller
             $contract->type_id = $request->type_id;
             $contract->start_date = $request->start_date;
             $contract->end_date = $request->end_date;
+            $contract->save();
 
             $filename =$this->newFilename();
-            $contract->filename = $filename;
-            $contract->save();
             
-            $request->pdf->storeAs('/contract',$filename.'.pdf','public');
-            $request->datasheet->storeAs('/datasheet',$filename.'.pdf','public');
+            $orgFile = new Attachment;
+            $orgFile->contract_id = $contract->id();
+            $attachType1 = AttachmentType::where('Doc. Original','name')->first();
+            $request->pdf->storeAs('/'.$attachType1->folder,$filename.'.pdf','public');
+            $orgFile->attachmenttype_id = $attachType1->id;
+            $orgFile->save();
+
+            $datasheet = new Attachment;
+            $datasheet->contract_id = $contract->id();
+            $attachType2 = AttachmentType::where('Ficha Tecnica','name')->first();
+            $request->pdf->storeAs('/'.$attachType2->folder,$filename.'.pdf','public');
+            $datasheet->attachmenttype_id = $attachType2->id;
+            $datasheet->save();
+            
         }else{
             $contract = Contract::find($request->id);
             $contract->enterprise_id = $request->enterprise_id;
@@ -64,10 +77,12 @@ class ContractController extends Controller
             $contract->end_date = $request->end_date;
             $contract->save();
             if($request->hasFile('pdf')){
-                $request->pdf->storeAs('/contract',$contract->filename.'.pdf','public');
+                $attach = Attachment::where('Doc. Original','name')->where('attachment_id',$request->id);
+                $request->pdf->storeAs('/'.$attach->type->folder,$attach->filename.'.pdf','public');
             }            
             if($request->hasFile('datasheet')){
-                $request->datasheet->storeAs('/contract',$contract->filename.'.pdf','public');
+                $attach = Attachment::where('Ficha Tecnica','name')->where('attachment_id',$request->id);
+                $request->pdf->storeAs('/'.$attach->type->folder,$attach->filename.'.pdf','public');
             }
         }
         return redirect(route('contract.info',['id' => $contract->id]));
@@ -75,7 +90,7 @@ class ContractController extends Controller
 
     public function info(Request $request){
         if($request->id)
-            return Inertia::render('Contract/Info',['contract' => Contract::with('enterprise')->with('type')->find($request->id)]);
+            return Inertia::render('Contract/Info',['contract' => Contract::with('enterprise')->with('type')->find($request->id),'attachments' => Attachment::where('contract_id','=',$request->id)->with('attachmenttype')->get()]);
         return redirect(route('contract.list'));
     }
     
