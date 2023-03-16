@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Attachment;
 use App\Models\AttachmentType;
+use Ramsey\Uuid\Uuid;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -39,7 +40,15 @@ class AttachmentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $filename =$this->newFilename();
+        $attachment = new Attachment;
+        $attachment->attachmenttype_id = $request->attachmenttype_id;
+        $attachment->contract_id = $request->contract_id;
+        $attachment->filename = $filename;
+        $attachment->save();     
+        $attachType1 = AttachmentType::find($request->attachmenttype_id);
+        $request->attachment->storeAs('/'.$attachType1->folder,$filename.'.pdf','public');
+        return redirect(route('contract.info',['id' => $request->contract_id]));
     }
 
     /**
@@ -85,5 +94,13 @@ class AttachmentController extends Controller
     public function destroy(Attachment $attachment)
     {
         //
+    }
+
+    protected function newFilename(){
+        $filename ='';
+        do {
+            $filename = Uuid::uuid4()->getHex();
+        } while (Attachment::query()->where('filename', $filename)->first() != null);
+        return $filename;
     }
 }

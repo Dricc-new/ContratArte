@@ -20,11 +20,12 @@ if(props.enterprise.reeup){
     reeup = props.enterprise.reeup.split('.');
 }
 
-function entry(event){
+function entry(){
     var r1 = document.getElementById('r1').value;
     var r2 = document.getElementById('r2').value;
     var r3 = document.getElementById('r3').value;
     form.reeup = r1+'.'+r2+'.'+r3;
+    reeup = form.reeup.split('.');
 }
 
 function submit(){

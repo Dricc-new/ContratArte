@@ -6,7 +6,8 @@ use App\Http\Controllers\EnterpriseController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-    
+use PHPUnit\Framework\Test;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -20,7 +21,7 @@ use Inertia\Inertia;
 
 
 Route::get('/test', function(){
-    return 'test';
+    return Inertia::render('Test');
 });
 
 Route::middleware([
@@ -54,9 +55,8 @@ Route::middleware([
 
     
     Route::prefix('/Usuario/')->name('user.')->group(function(){
-        Route::get('Nuevo',UserController::class)->name('new');
-        Route::post('Nuevo',[UserController::class,'post'])->name('new.post');
-        Route::get('Editar/{id}',[UserController::class,'edit'])->name('edit');
+        Route::get('Editar',[UserController::class,'edit'])->name('edit');
+        Route::post('Nuevo',[UserController::class,'post'])->name('post');
         Route::get('Lista',[UserController::class,'list'])->name('list');
     });
     

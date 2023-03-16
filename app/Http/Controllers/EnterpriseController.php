@@ -36,7 +36,17 @@ class EnterpriseController extends Controller
     }
 
     public function post(EnterpriseEditRequest $request){
-        return $request;
+        if($request->type == 'new'){
+            $enterprise = new Enterprise();
+        }
+        else
+            $enterprise = Enterprise::find($request->id);
+        
+        $enterprise->reeup = $request->reeup;
+        $enterprise->name = $request->name;
+        $enterprise->email = $request->email;
+        $enterprise->save();
+        return redirect(route('enterprise.info',['id' => $enterprise->id]));
     }
     
     public function search(Request $request){

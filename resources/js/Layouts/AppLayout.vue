@@ -61,7 +61,7 @@ if(user.roles.find(x => x.name == 'Admin')!=null){
         {
             icon: 'fa fa-plus-circle w-6',
             head: 'Nuevo',
-            link: route('user.new')
+            link: route('user.edit')
         },
     ]});
 }

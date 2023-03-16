@@ -42,8 +42,7 @@ class ContractController extends Controller
         $contract = null;
         if($request->type == 'new'){
             $enterprise = Enterprise::find($request->enterprise_id);
-            if($enterprise->contracts->find($request->type_id))
-                return 'error';
+
             $contract = new Contract();
             $contract->enterprise_id = $request->enterprise_id;
             $contract->number = $request->number;
@@ -51,20 +50,22 @@ class ContractController extends Controller
             $contract->start_date = $request->start_date;
             $contract->end_date = $request->end_date;
             $contract->save();
-
+            
             $filename =$this->newFilename();
             
             $orgFile = new Attachment;
-            $orgFile->contract_id = $contract->id();
-            $attachType1 = AttachmentType::where('Doc. Original','name')->first();
+            $orgFile->contract_id = $contract->id;
+            $attachType1 = AttachmentType::where('name','Doc. Original')->first();
             $request->pdf->storeAs('/'.$attachType1->folder,$filename.'.pdf','public');
+            $orgFile->filename = $filename;
             $orgFile->attachmenttype_id = $attachType1->id;
             $orgFile->save();
-
+            
             $datasheet = new Attachment;
-            $datasheet->contract_id = $contract->id();
-            $attachType2 = AttachmentType::where('Ficha Tecnica','name')->first();
+            $datasheet->contract_id = $contract->id;
+            $attachType2 = AttachmentType::where('name','Ficha Tecnica')->first();
             $request->pdf->storeAs('/'.$attachType2->folder,$filename.'.pdf','public');
+            $datasheet->filename = $filename;
             $datasheet->attachmenttype_id = $attachType2->id;
             $datasheet->save();
             
@@ -132,7 +133,7 @@ class ContractController extends Controller
         $filename ='';
         do {
             $filename = Uuid::uuid4()->getHex();
-        } while (Contract::query()->where('filename', $filename)->first() != null);
+        }while (Attachment::where('filename', $filename)->first() != null);
         return $filename;
     }
 }

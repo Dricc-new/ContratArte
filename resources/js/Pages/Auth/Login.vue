@@ -37,14 +37,16 @@ const submit = () => {
 
     <AuthenticationCard>
         <template #logo>
-            <AuthenticationCardLogo />
+            <img  src="/img/WelcomeBG.jpg" alt="" class="paper object-cover w-screen opacity-60 h-screen">
         </template>
 
         <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
             {{ status }}
         </div>
-
         <form @submit.prevent="submit" class="grid place-content-center h-screen">
+            <div class="grid place-content-center py-20">
+                <AuthenticationCardLogo class="rounded-full w-32 h-32 bg-zinc-800"/>
+            </div>
             <div>
                 <InputLabel for="email" value="Usuario" />
                 <TextInput
