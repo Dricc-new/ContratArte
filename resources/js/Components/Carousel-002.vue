@@ -30,7 +30,6 @@
         }
         
         #SetDataAllElemnt(data1,data2,data3){
-            console.log();
             this.#SetDataElemnt(this.element.firstChild.childNodes[0],this.temp[data1]);
             this.#SetDataElemnt(this.element.firstChild.childNodes[1],this.temp[data2]);
             this.element.classList.remove('Carousel_001-active');
@@ -82,25 +81,21 @@
             if(vthis.Dlength == 1){
                 vthis.element.classList.remove('Carousel_001-active');
             }else if(vthis.Dlength == 2){
-                if(vthis.ind == 0){
-                    vthis.temp[0] = vthis.data[vthis.ind = 1];
-                    vthis.temp[1] = vthis.data[0];
-                }else{
-                    vthis.temp[0] = vthis.data[vthis.ind = 0];
-                    vthis.temp[1] = vthis.data[1];
-                } 
+                var temp = vthis.vthis[0];
+                vthis.temp[0] = temp.temp[1];
+                vthis.temp[1] = temp;
                 vthis.#SetDataAllElemnt(0,1,0);
                 
             }else if(vthis.Dlength > 2){
-                if(vthis.ind == 0) vthis.temp[0] = vthis.data[vthis.Dlength-1];
-                else vthis.temp[0] = vthis.data[vthis.ind - 1];
-
-                vthis.temp[1] = vthis.data[vthis.ind];
-                
                 if(vthis.ind >= vthis.Dlength-1){
+                    vthis.temp[0] = vthis.data[vthis.ind-1];
+                    vthis.temp[1] = vthis.data[vthis.ind];
                     vthis.temp[2] = vthis.data[vthis.ind = 0];
                 }else{
-                    vthis.temp[2] = vthis.data[++vthis.ind];
+                    if(vthis.ind == 0) vthis.temp[0] = vthis.data[vthis.Dlength-1];
+                    else vthis.temp[0] = vthis.data[vthis.ind - 1];
+                    vthis.temp[1] = vthis.data[vthis.ind++];
+                    vthis.temp[2] = vthis.data[vthis.ind];
                 } 
                 vthis.#SetDataAllElemnt(0,1,2);
                 
@@ -121,25 +116,23 @@
                 this.temp[0] = data[0];
                 this.temp[1] = data[0];
                 this.temp[2] = data[0];
-                this.#SetDataAllElemnt(0,0,0);
                 this.element = document.getElementById(id);
             }else{
                 if(this.Dlength == 2){
                     this.temp[0] = data[1];
                     this.temp[1] = data[0];
-                    this.#SetDataAllElemnt(0,1,0);
+                    this.temp[2] = data[1];
                 }else if(this.Dlength > 2){
                     this.temp[0] = data[this.Dlength-1];
                     this.temp[1] = data[0];
                     this.temp[2] = data[1];
-                    this.#SetDataAllElemnt(0,1,2);
                 }
 
                 this.element = document.getElementById(id);
                 this.nextPoint();
                 
             }
-            
+            this.#SetDataAllElemnt(0,1,2);
         }
     }
 
@@ -199,7 +192,6 @@
     height: 268px;
     border-radius: 8px;
 }
-
 .Carousel_001>ul{
     width: 100%;
     margin-top: 4px;
