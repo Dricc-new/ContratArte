@@ -5,31 +5,37 @@
         id: String,
         with: Number,
         height: Number,
+        time: Number,
     });
     var With = (props.with == null )? '500px' : props.with+'px'; 
     var Height = (props.height == null )? '500px' : props.height+'px';
     var hImg = (props.height == null )? '488px' : (props.height-12)+'px';
-    
+    var trans = '0px';
     class Carousel_001_class{
         constructor(){
             this.ind = Number;
             this.data = Array;
             this.idTime = Number;
+            this.time = Number;
             this.Dlength = Number;
             this.element = Object;
+            this.interrupto = Boolean;
+            this.MouseX = Number;
+            this.Width = Number;
         }
         #SetDataElemnt(element,data){
             element.setAttribute('href', data.link);
             element.firstChild.setAttribute('src',data.src);
         }
         
-        #SetDataAllElemnt(data1,data2){
+        #SetDataAllElemnt(data1,data2,data3){
             this.#SetDataElemnt(this.element.firstChild.childNodes[0],this.data[data1]);
-            this.element.classList.remove('Carousel_001-active');
             this.#SetDataElemnt(this.element.firstChild.childNodes[1],this.data[data2]);
+            this.element.classList.remove('Carousel_001-active');
+            this.#SetDataElemnt(this.element.firstChild.childNodes[2],this.data[data3]);
         }
         
-        selectPoint(ind = this.ind){
+        SelectPoint(ind = this.ind){
             if(this.ind > 0) this.element.lastChild.children[this.ind-1].firstChild.classList.remove('itemactive');
             else this.element.lastChild.children[this.Dlength-1].firstChild.classList.remove('itemactive');
 
@@ -37,53 +43,82 @@
         }        
         
         SelectItem(event){
-            clearTimeout(this.time);
-            this.selectPoint(event.target.value);
+            clearTimeout(this.idTime);
+            this.SelectPoint(event.target.value);
             this.ind = event.target.value;
             this.Next(this);
         }
         
+        Drag(event){
+            if(event.type == 'drag'){
+                clearTimeout(this.idTime);
+                if(this.MouseX == 0) this.MouseX = event.screenX;
+                this.element.firstChild.setAttribute('style','translate:'+(event.screenX - this.MouseX)+'px');
+            }
+            if(event.type == 'dragend'){
+                this.element.firstChild.setAttribute('style','');
+                var rest = event.screenX - this.MouseX;
+                trans = rest;
+                console.log(rest);
+                if(this.Width/2 < Math.abs(rest)){
+                    if(Math.sign(rest)>0){
+                        this.ind = (this.ind > 0)?this.ind-1:this.Dlength-1;
+                    }else{
+                    }
+                } 
+                this.Next(this,this.time);
+                this.MouseX = 0;
+            }
+        }
+
         Play(vthis){
-            if(vthis.Dlength != 1) vthis.selectPoint();
+            if(vthis.Dlength != 1) vthis.SelectPoint();
             vthis.element.classList.add('Carousel_001-active');
             vthis.idTime = setTimeout(() =>{
                 vthis.Next(vthis);
             }
-            , 4000);
+            , vthis.time);
         }
         
-        Next(vthis){
+        Next(vthis,time = 100){
             if(vthis.Dlength == 1){
                 vthis.element.classList.remove('Carousel_001-active');
             }else if(vthis.Dlength == 2){
                 if(vthis.ind == 0){
                     vthis.ind = 1;
-                    vthis.#SetDataAllElemnt(0,1);
+                    vthis.#SetDataAllElemnt(1,0,1);
                 }else{
                     vthis.ind = 0;
-                    vthis.#SetDataAllElemnt(1,0);
+                    vthis.#SetDataAllElemnt(0,1,0);
                 } 
             }else if(vthis.Dlength > 2){
                 var ind;
+                if(vthis.ind == 0) ind = vthis.Dlength-1;
+                else ind = vthis.ind - 1;
+
                 if(vthis.ind >= vthis.Dlength-1){
-                    vthis.#SetDataAllElemnt(vthis.ind,vthis.ind = 0);
+                    vthis.#SetDataAllElemnt(ind,vthis.ind,vthis.ind = 0);
                 }else{
-                    vthis.#SetDataAllElemnt(vthis.ind++,vthis.ind);
+                    vthis.#SetDataAllElemnt(ind,vthis.ind++,vthis.ind);
                 } 
             }
-            vthis.time = setTimeout(() =>{
+            vthis.idTime = setTimeout(() =>{
                 vthis.Play(vthis);
-            }, 4000);
+            }, time);
         }
-        set(data,id){
+        set(data,id,time = 2500,width){
             this.ind = 0;
             this.data = data;
+            this.time = time;
             this.Dlength = data.length;
             this.element = document.getElementById(id);
+            this.interrupto = false;
+            this.MouseX = 0;
+            this.Width = width;
             if(this.Dlength == 1){
-                this.#SetDataAllElemnt(0,0);
+                this.#SetDataAllElemnt(0,0,0);
             }else{
-                this.selectPoint();
+                this.SelectPoint();
                 this.Next(this);
             }
         }
@@ -91,13 +126,15 @@
 
     const c = new Carousel_001_class;
     onMounted(()=>{
-        c.set(props.data,props.id);
+        c.set(props.data,props.id,(props.time == null )? 2500 : props.time,props.with);
     });
-
 </script>
 <template>
     <div class="Carousel_001" :id="id">
-        <div>
+        <div @drag="c.Drag" @dragend="c.Drag" >
+            <a href="#">
+                <img src="#">
+            </a>
             <a href="#">
                 <img src="#">
             </a>
@@ -121,15 +158,15 @@
 }
 .Carousel_001>div{
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    width: calc(100% * 2);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: calc(100% * 3);
     height: v-bind(hImg);
-    transform: translateX( calc(v-bind(With)*(-1)));
+    transform: translateX( calc(v-bind(With)*(-2)));
 }
 .Carousel_001>div>a{
     height: v-bind(hImg);
     width: 100%;
-    transform: translateX(v-bind(With));
+    transform: translateX( v-bind(With));
 }
 
 .Carousel_001>div>a>img{

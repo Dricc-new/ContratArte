@@ -1,150 +1,106 @@
 <script setup>
-    import {Link} from '@inertiajs/vue3';
-    import { onMounted } from 'vue';
+    import { onMounted, reactive } from 'vue';
     var props = defineProps({
         data: Object,
-        id: Number,
+        id: String,
+        with: Number,
+        height: Number,
     });
+    var With = (props.with == null )? '500px' : props.with+'px'; 
+    var Height = (props.height == null )? '500px' : props.height+'px';
+    var hImg = (props.height == null )? '488px' : (props.height-12)+'px';
     
     class Carousel_001_class{
         constructor(){
-            this.id = String;
             this.ind = Number;
-            this.item = Number;
-            this.temp = Array;
             this.data = Array;
-            this.time = Number;
+            this.idTime = Number;
             this.Dlength = Number;
             this.element = Object;
         }
-        
-        start(){
-
-            var vthis = this;
-            this.time = setTimeout(() =>{vthis.Play(vthis)}, 4000);
-        }
-        
         #SetDataElemnt(element,data){
             element.setAttribute('href', data.link);
             element.firstChild.setAttribute('src',data.src);
         }
         
         #SetDataAllElemnt(data1,data2,data3){
-            this.#SetDataElemnt(this.element.firstChild.childNodes[0],this.temp[data1]);
-            this.#SetDataElemnt(this.element.firstChild.childNodes[1],this.temp[data2]);
+            this.#SetDataElemnt(this.element.firstChild.childNodes[0],this.data[data1]);
+            this.#SetDataElemnt(this.element.firstChild.childNodes[1],this.data[data2]);
             this.element.classList.remove('Carousel_001-active');
-            this.#SetDataElemnt(this.element.firstChild.childNodes[2],this.temp[data3]);
+            this.#SetDataElemnt(this.element.firstChild.childNodes[2],this.data[data3]);
         }
         
-        nextPoint(){
-            if(this.item > 0){
-                this.element.lastChild.childNodes[this.item].lastChild.classList.remove('itemactive');
-            }
-            this.item++;
-            if(this.item > this.Dlength){
-                this.item = 1;
-            }
-            this.element.lastChild.childNodes[this.item].lastChild.classList.add('itemactive');
-        }
+        selectPoint(ind = this.ind){
+            if(this.ind > 0) this.element.lastChild.children[this.ind-1].firstChild.classList.remove('itemactive');
+            else this.element.lastChild.children[this.Dlength-1].firstChild.classList.remove('itemactive');
+
+            this.element.lastChild.children[ind].firstChild.classList.add('itemactive');
+        }        
         
         SelectItem(event){
             clearTimeout(this.time);
-            this.element.classList.remove('Carousel_001-active');
-            var ind = event.target.value;
-            this.element.lastChild.childNodes[this.item].lastChild.classList.remove('itemactive');
-            this.item = ind;
-            this.nextPoint();
-            
-            if(ind == 0) this.temp[0] = this.data[this.Dlength-1];
-            else this.temp[0] = this.data[ind-1];
-            this.temp[1] = this.data[ind];
-            if(ind == this.Dlength-1) this.ind = 0; 
-            else this.ind = ++ind;
-            this.temp[2] = this.data[this.ind];
-            this.#SetDataAllElemnt(0,1,2);
-            
-            this.start();
+            this.selectPoint(event.target.value);
+            this.ind = event.target.value;
+            this.Next(this);
         }
         
         Play(vthis){
-            if(vthis.Dlength != 1) vthis.nextPoint();
+            if(vthis.Dlength != 1) vthis.selectPoint();
             vthis.element.classList.add('Carousel_001-active');
-            vthis.time = setTimeout(() =>{
+            vthis.idTime = setTimeout(() =>{
                 vthis.Next(vthis);
             }
             , 4000);
         }
         
         Next(vthis){
-            
-
             if(vthis.Dlength == 1){
                 vthis.element.classList.remove('Carousel_001-active');
             }else if(vthis.Dlength == 2){
-                var temp = vthis.vthis[0];
-                vthis.temp[0] = temp.temp[1];
-                vthis.temp[1] = temp;
-                vthis.#SetDataAllElemnt(0,1,0);
-                
-            }else if(vthis.Dlength > 2){
-                if(vthis.ind >= vthis.Dlength-1){
-                    vthis.temp[0] = vthis.data[vthis.ind-1];
-                    vthis.temp[1] = vthis.data[vthis.ind];
-                    vthis.temp[2] = vthis.data[vthis.ind = 0];
+                if(vthis.ind == 0){
+                    vthis.ind = 1;
+                    vthis.#SetDataAllElemnt(1,0,1);
                 }else{
-                    if(vthis.ind == 0) vthis.temp[0] = vthis.data[vthis.Dlength-1];
-                    else vthis.temp[0] = vthis.data[vthis.ind - 1];
-                    vthis.temp[1] = vthis.data[vthis.ind++];
-                    vthis.temp[2] = vthis.data[vthis.ind];
+                    vthis.ind = 0;
+                    vthis.#SetDataAllElemnt(0,1,0);
                 } 
-                vthis.#SetDataAllElemnt(0,1,2);
-                
+            }else if(vthis.Dlength > 2){
+                var ind;
+                if(vthis.ind == 0) ind = vthis.Dlength-1;
+                else ind = vthis.ind - 1;
+
+                if(vthis.ind >= vthis.Dlength-1){
+                    vthis.#SetDataAllElemnt(ind,vthis.ind,vthis.ind = 0);
+                }else{
+                    vthis.#SetDataAllElemnt(ind,vthis.ind++,vthis.ind);
+                } 
             }
-            
             vthis.time = setTimeout(() =>{
                 vthis.Play(vthis);
             }, 4000);
         }
-        
         set(data,id){
-            this.id = id;
-            this.ind = 1;
-            this.item = 0;
+            this.ind = 0;
             this.data = data;
             this.Dlength = data.length;
+            this.element = document.getElementById(id);
             if(this.Dlength == 1){
-                this.temp[0] = data[0];
-                this.temp[1] = data[0];
-                this.temp[2] = data[0];
-                this.element = document.getElementById(id);
+                this.#SetDataAllElemnt(0,0,0);
             }else{
-                if(this.Dlength == 2){
-                    this.temp[0] = data[1];
-                    this.temp[1] = data[0];
-                    this.temp[2] = data[1];
-                }else if(this.Dlength > 2){
-                    this.temp[0] = data[this.Dlength-1];
-                    this.temp[1] = data[0];
-                    this.temp[2] = data[1];
-                }
-
-                this.element = document.getElementById(id);
-                this.nextPoint();
-                
+                this.selectPoint();
+                this.Next(this);
             }
-            this.#SetDataAllElemnt(0,1,2);
         }
     }
 
     const c = new Carousel_001_class;
     onMounted(()=>{
         c.set(props.data,props.id);
-        c.start();
     });
 
 </script>
 <template>
-    <div class="Carousel_001" :id="id" @="onChange">
+    <div class="Carousel_001" :id="id">
         <div>
             <a href="#">
                 <img src="#">
@@ -164,34 +120,34 @@
 
 <style scoped>
 .Carousel_001{
-    --with-Carousel_001:500px;
     position: relative;
     margin: 12px;
-    width: var(--with-Carousel_001);
-    height: 280px;
+    width: v-bind(With);
+    height: v-bind(Height);
     overflow: hidden;
 }
 .Carousel_001>div{
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     width: calc(100% * 3);
-    height: 268px;
-    transform: translateX( calc(var(--with-Carousel_001)*(-2)));
+    height: v-bind(hImg);
+    transform: translateX( calc(v-bind(With)*(-2)));
 }
 .Carousel_001>div>a{
-    height: 268px;
+    height: v-bind(hImg);
     width: 100%;
-    transform: translateX( calc( var(--with-Carousel_001)));
+    transform: translateX( v-bind(With));
 }
 
 .Carousel_001>div>a>img{
     width: calc(100% - 12px);
+    height: v-bind(hImg);
     object-fit: cover;
     margin-left: 12px;
     margin-right: 12px;
-    height: 268px;
     border-radius: 8px;
 }
+
 .Carousel_001>ul{
     width: 100%;
     margin-top: 4px;
@@ -228,7 +184,7 @@
 }
 
 .Carousel_001-active>div>a{
-    transform: translateX(calc(0px));
+    transform: translateX(0px);
     transition: transform .4s ease-in;
 } 
 
